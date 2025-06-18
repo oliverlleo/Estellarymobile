@@ -48,6 +48,7 @@ window.onload = function() {
     const notificationContainer = document.getElementById("notificationContainer");
     // Mobile Controls
     const mobileControls = document.getElementById('mobileControls');
+    const joystickContainer = document.getElementById('joystickContainer');
     const joystickBase = document.getElementById('joystickBase');
     const joystickStick = document.getElementById('joystickStick');
     const mobileAbilityButtons = document.getElementById('mobileAbilityButtons');
@@ -1443,29 +1444,38 @@ window.onload = function() {
     
     function setupMobileControls() {
         mobileControls.classList.remove('hidden');
-        const rect = joystickBase.getBoundingClientRect();
-        joystick.baseX = rect.left + rect.width / 2;
-        joystick.baseY = rect.top + rect.height / 2;
+        joystickContainer.style.display = 'none'; // Começa escondido
 
-        canvas.addEventListener('touchstart', handleJoystickStart, { passive: false });
-        canvas.addEventListener('touchmove', handleJoystickMove, { passive: false });
-        canvas.addEventListener('touchend', handleJoystickEnd, { passive: false });
-        canvas.addEventListener('touchcancel', handleJoystickEnd, { passive: false });
+        canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+        canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+        canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+        canvas.addEventListener('touchcancel', handleTouchEnd, { passive: false });
     }
 
-    function handleJoystickStart(e) {
+    function handleTouchStart(e) {
         e.preventDefault();
         const touch = e.changedTouches[0];
-        const dist = Math.hypot(touch.clientX - joystick.baseX, touch.clientY - joystick.baseY);
-        if (dist < joystickBase.clientWidth / 2) {
+
+        // Se o toque for na metade esquerda da tela e o joystick não estiver ativo
+        if (touch.clientX < window.innerWidth / 2 && !joystick.active) {
             joystick.active = true;
             joystick.touchId = touch.identifier;
+            joystick.baseX = touch.clientX;
+            joystick.baseY = touch.clientY;
+            joystick.stickX = touch.clientX;
+            joystick.stickY = touch.clientY;
+
+            // Mostra e posiciona o joystick no local do toque
+            joystickContainer.style.display = 'block';
+            joystickContainer.style.left = `${joystick.baseX - joystickContainer.offsetWidth / 2}px`;
+            joystickContainer.style.top = `${joystick.baseY - joystickContainer.offsetHeight / 2}px`;
         }
     }
 
-    function handleJoystickMove(e) {
+    function handleTouchMove(e) {
         if (!joystick.active) return;
         e.preventDefault();
+        
         let touch;
         for (let i = 0; i < e.changedTouches.length; i++) {
             if (e.changedTouches[i].identifier === joystick.touchId) {
@@ -1475,8 +1485,11 @@ window.onload = function() {
         }
         if (!touch) return;
         
-        let dx = touch.clientX - joystick.baseX;
-        let dy = touch.clientY - joystick.baseY;
+        joystick.stickX = touch.clientX;
+        joystick.stickY = touch.clientY;
+
+        let dx = joystick.stickX - joystick.baseX;
+        let dy = joystick.stickY - joystick.baseY;
         const distance = Math.hypot(dx, dy);
         const radius = joystickBase.clientWidth / 2;
         
@@ -1490,8 +1503,9 @@ window.onload = function() {
         joystick.moveY = dy / radius;
     }
 
-    function handleJoystickEnd(e) {
+    function handleTouchEnd(e) {
         if (!joystick.active) return;
+        
         let touchReleased = false;
         for (let i = 0; i < e.changedTouches.length; i++) {
             if (e.changedTouches[i].identifier === joystick.touchId) {
@@ -1501,14 +1515,25 @@ window.onload = function() {
         }
         if (!touchReleased) return;
 
+        // Reseta e esconde o joystick
         joystick.active = false;
         joystick.touchId = null;
         joystickStick.style.transform = 'translate(-50%, -50%)';
         joystick.moveX = 0;
         joystick.moveY = 0;
+        joystickContainer.style.display = 'none';
     }
 
+
     playButton.addEventListener("click", () => {
+        if (isMobileDevice) {
+            // Tenta travar a orientação em paisagem
+            if (screen.orientation && typeof screen.orientation.lock === 'function') {
+                screen.orientation.lock('landscape-primary')
+                    .catch(err => console.error("Não foi possível travar a orientação:", err));
+            }
+        }
+
         introScreen.classList.add("hidden"); canvas.classList.remove("hidden");
         xpBarContainer.classList.remove("hidden"); healthBarContainer.classList.remove("hidden");
         scoreContainer.classList.remove("hidden"); abilityCooldownsContainer.classList.remove("hidden");
