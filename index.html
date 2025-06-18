@@ -1,1 +1,136 @@
-EM BREVE
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Estellary</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- POPUP DE PERMISSÃO DE SOM -->
+    <div id="soundPermissionPopup">
+        <div class="popup-content">
+            <h2>Permitir som?</h2>
+            <p>Este jogo contém áudio. Deseja ativá-lo?</p>
+            <div class="popup-buttons">
+                <button id="allowSoundBtn">Sim</button>
+                <button id="denySoundBtn">Não</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DE INTRODUÇÃO -->
+    <div id="introScreen" class="hidden">
+        <video id="introVideo" src="assets/video/background_video.mp4" loop muted playsinline></video>
+        <img id="playButton" src="assets/images/play_button.png" alt="Jogar">
+    </div>
+    
+    <!-- SOBREPOSIÇÕES DE UI -->
+    <div id="damageFlashEffect" class="hidden"></div>
+    <div id="notificationContainer"></div>
+
+    <!-- BORDA DE ALERTA DO CHEFE -->
+    <div id="bossWarningBorder" class="hidden"></div>
+
+    <!-- ELEMENTOS DO JOGO -->
+    <canvas id="gameCanvas" class="hidden"></canvas>
+    
+    <!-- UI DO JOGO -->
+    <div id="scoreContainer" class="hidden">
+        <img src="assets/images/score.png" alt="Score" id="scoreTitle">
+        <div id="scoreDigits">
+            <img src="assets/images/0.png" alt="0" id="scoreDigit0">
+            <img src="assets/images/0.png" alt="0" id="scoreDigit1">
+            <img src="assets/images/0.png" alt="0" id="scoreDigit2">
+            <img src="assets/images/0.png" alt="0" id="scoreDigit3">
+            <img src="assets/images/0.png" alt="0" id="scoreDigit4">
+        </div>
+    </div>
+
+    <div id="xpBarContainer" class="hidden">
+        <div id="xpBarFill"></div>
+        <span id="xpText">XP: 0/10</span>
+    </div>
+
+    <div id="healthBarContainer" class="hidden">
+        <div id="healthBarFill"></div>
+        <span id="healthText">HP: 100/100</span>
+    </div>
+    
+    <div id="heatBarContainer" class="hidden">
+        <div id="heatBarFill"></div>
+        <span id="heatText">CANHÃO DE PLASMA</span>
+    </div>
+
+    <div id="bossHealthBarContainer" class="hidden">
+        <div id="bossHealthBarFill"></div>
+        <span id="bossHealthText">CHEFE</span>
+    </div>
+    
+    <!-- UI DE HABILIDADES E POWER-UPS -->
+    <div id="passivePowerupsContainer" class="hidden"></div>
+    <div id="abilityCooldownsContainer" class="hidden"></div>
+
+    <!-- TELAS DE SOBREPOSIÇÃO -->
+    <div id="levelUpScreen" class="hidden">
+        <div class="level-up-header">
+             <h2>Nível Up! Escolha uma melhoria:</h2>
+             <button id="rerollButton" class="hidden">Rerolar (1)</button>
+        </div>
+        <div id="cardContainer"></div>
+    </div>
+
+    <div id="pauseMenu" class="hidden">
+        <div class="pause-content">
+            <h2>PAUSA</h2>
+            <button id="resumeButton">Continuar</button>
+            <button id="restartFromPauseButton">Reiniciar</button>
+        </div>
+    </div>
+    
+    <div id="cheatMenu" class="hidden">
+        <div class="cheat-menu-content">
+            <h2>Menu de Power-ups</h2>
+            <div id="cheatPowerupList"></div>
+            <button id="closeCheatMenuBtn">Fechar</button>
+        </div>
+    </div>
+
+    <div id="controls" class="hidden">
+        <strong>Controles:</strong><br>
+        - WASD: Mover<br>
+        - Espaço/Mouse: Atirar<br>
+        - Esc: Pausar Jogo
+    </div>
+
+    <div id="gameOverScreen" class="hidden">
+        <div class="gameOverContent">
+            <img id="destroyedShipImage" src="assets/images/Navedestruida.png" alt="Nave Destruída">
+            <img id="gameOverMessageImage" src="assets/images/ruim.png" alt="Você é ruim, melhore!">
+            <img id="restartButton" class="restart-button-image" src="assets/images/botaojogarnovamente.png" alt="Jogar Novamente">
+        </div>
+    </div>
+    
+    <!-- CONTROLES MOBILE -->
+    <div id="mobileControls" class="hidden">
+        <div id="joystickContainer">
+            <div id="joystickBase">
+                <div id="joystickStick"></div>
+            </div>
+        </div>
+        <div id="mobileAbilityButtons">
+            <!-- Botões de habilidade serão inseridos aqui pelo JS -->
+        </div>
+    </div>
+
+    <!-- ÁUDIO -->
+    <audio id="introMusic" src="assets/audio/startwind.ogg" loop></audio>
+    <audio id="gameMusic" src="assets/audio/play.ogg" loop></audio>
+    <audio id="shotSound" src="assets/audio/tiro.ogg"></audio>
+    <audio id="plasmaSound" src="assets/audio/plasma.ogg"></audio>
+    <audio id="gameOverSound" src="assets/audio/gameover.ogg"></audio>
+    <audio id="bossMusic" src="assets/audio/boss1.ogg" loop></audio>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
